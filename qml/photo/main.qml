@@ -12,6 +12,9 @@ PageStackWindow {
     property string _TEXT_COLOR: theme.inverted ? "white" : "black"
     property string _ICON_LOCATION: "/usr/share/themes/blanco/meegotouch/icons/"
     property string _ACTIVE_COLOR: "color11"
+    property string _INDICATOR_SEARCHING: "yellow"
+    property string _INDICATOR_FOCUSED: "blue"
+    property string _INDICATOR_READY: "green"
 
     Component.onCompleted: {
         theme.inverted = true;

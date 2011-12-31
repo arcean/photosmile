@@ -54,12 +54,85 @@ void QDeclarativeCamera::toggleCamera(bool mainCamera)
     setPointModeFocus();
     qDebug() << "SUP: " << focus_->isFocusPointModeSupported(QCameraFocus::FocusPointCustom);
 
-    connect(camera_, SIGNAL(lockStatusChanged(QCamera::LockStatus,QCamera::LockChangeReason)), this, SLOT(takePhotoFull(QCamera::LockStatus,QCamera::LockChangeReason)));
-    connect(focus_, SIGNAL(focusZonesChanged()), this, SLOT(signalFocusGained()));
+    connect(camera_, SIGNAL(lockStatusChanged(QCamera::LockStatus,QCamera::LockChangeReason)), this, SLOT(focusChangedSlot(QCamera::LockStatus,QCamera::LockChangeReason)));
+    connect(focus_, SIGNAL(focusZonesChanged()), this, SLOT(focusZonesChanged()));
 
 #ifdef DEBUG
     qDebug() << "ERROR: " << camera_->errorString();
 #endif
+}
+
+void QDeclarativeCamera::isSupported()
+{
+    qDebug() << "Exposure manual: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureManual);
+    qDebug() << "ExposureAuto: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureAuto);
+    qDebug() << "ExposureNight: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureNight);
+    qDebug() << "ExposureBacklight: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureBacklight);
+    qDebug() << "ExposureSpotlight: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureSpotlight);
+    qDebug() << "ExposureSports: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureSports);
+    qDebug() << "ExposureSnow: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureSnow);
+    qDebug() << "ExposureBeach: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureBeach);
+    qDebug() << "ExposureLargeAperture: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureLargeAperture);
+    qDebug() << "ExposureSmallAperture: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureSmallAperture);
+    qDebug() << "ExposurePortrait: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposurePortrait);
+    qDebug() << "ExposureModeVendor: " << camera_->exposure()->isExposureModeSupported(QCameraExposure::ExposureModeVendor);
+    qDebug() << "";
+    qDebug() << "FlashOff" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashOff);
+    qDebug() << "FlashOn" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashOn);
+    qDebug() << "FlashAuto" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashAuto);
+    qDebug() << "FlashRedEyeReduction" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashRedEyeReduction);
+    qDebug() << "FlashFill" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashFill);
+    qDebug() << "FlashTorch" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashTorch);
+    qDebug() << "FlashSlowSyncFrontCurtain" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashSlowSyncFrontCurtain);
+    qDebug() << "FlashSlowSyncRearCurtain" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashSlowSyncRearCurtain);
+    qDebug() << "FlashManual" << camera_->exposure()->isFlashModeSupported(QCameraExposure::FlashManual);
+    qDebug() << "";
+    qDebug() << "MeteringAverage" << camera_->exposure()->isMeteringModeSupported(QCameraExposure::MeteringAverage);
+    qDebug() << "MeteringSpot" << camera_->exposure()->isMeteringModeSupported(QCameraExposure::MeteringSpot);
+    qDebug() << "MeteringMatrix" << camera_->exposure()->isMeteringModeSupported(QCameraExposure::MeteringMatrix);
+    qDebug() << "";
+    bool ap = false;
+    for (int i = 0; i < camera_->exposure()->supportedApertures(&ap).length(); i++)
+        qDebug() << "aperture: " << camera_->exposure()->supportedApertures().at(i);
+    qDebug() << "aperture cont: " << ap;
+
+    ap = false;
+    for (int i = 0; i < camera_->exposure()->supportedIsoSensitivities(&ap).length(); i++)
+        qDebug() << "iso: " << camera_->exposure()->supportedIsoSensitivities().at(i);
+    qDebug() << "iso cont: " << ap;
+
+    ap = false;
+    for (int i = 0; i < camera_->exposure()->supportedShutterSpeeds(&ap).length(); i++)
+        qDebug() << "shutter: " << camera_->exposure()->supportedShutterSpeeds().at(i);
+    qDebug() << "shutter cont: " << ap;
+
+    qDebug() << "";
+    qDebug() << "denoising:" << camera_->imageProcessing()->isDenoisingSupported();
+    qDebug() << "sharpening:" << camera_->imageProcessing()->isSharpeningSupported();
+
+    qDebug() << "WhiteBalanceManual:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceManual);
+    qDebug() << "WhiteBalanceAuto:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceAuto);
+    qDebug() << "WhiteBalanceSunlight:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceSunlight);
+    qDebug() << "WhiteBalanceCloudy:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceCloudy);
+    qDebug() << "WhiteBalanceShade:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceShade);
+    qDebug() << "WhiteBalanceTungsten:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceTungsten);
+    qDebug() << "WhiteBalanceFluorescent:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceFluorescent);
+    qDebug() << "WhiteBalanceIncandescent:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceIncandescent);
+    qDebug() << "WhiteBalanceFlash:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceFlash);
+    qDebug() << "WhiteBalanceSunset:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceSunset);
+    qDebug() << "WhiteBalanceVendor:" << camera_->imageProcessing()->isWhiteBalanceModeSupported(QCameraImageProcessing::WhiteBalanceVendor);
+    qDebug() << "";
+    qDebug() << "ManualFocus" << camera_->focus()->isFocusModeSupported(QCameraFocus::ManualFocus);
+    qDebug() << "AutoFocus" << camera_->focus()->isFocusModeSupported(QCameraFocus::AutoFocus);
+    qDebug() << "ContinuousFocus" << camera_->focus()->isFocusModeSupported(QCameraFocus::ContinuousFocus);
+    qDebug() << "InfinityFocus" << camera_->focus()->isFocusModeSupported(QCameraFocus::InfinityFocus);
+    qDebug() << "HyperfocalFocus" << camera_->focus()->isFocusModeSupported(QCameraFocus::HyperfocalFocus);
+    qDebug() << "MacroFocus" << camera_->focus()->isFocusModeSupported(QCameraFocus::MacroFocus);
+    qDebug() << "";
+    qDebug() << "FocusPointAuto" << camera_->focus()->isFocusPointModeSupported(QCameraFocus::FocusPointAuto);
+    qDebug() << "FocusPointCenter" << camera_->focus()->isFocusPointModeSupported(QCameraFocus::FocusPointCenter);
+    qDebug() << "FocusPointFaceDetection" << camera_->focus()->isFocusPointModeSupported(QCameraFocus::FocusPointFaceDetection);
+    qDebug() << "FocusPointCustom" << camera_->focus()->isFocusPointModeSupported(QCameraFocus::FocusPointCustom);
 }
 
 
@@ -118,26 +191,41 @@ void QDeclarativeCamera::unlock()
 
 void QDeclarativeCamera::takePhoto()
 {
-    //camera_->searchAndLock();
+    camera_->searchAndLock();
     capture->capture();
     camera_->unlock();
 }
 
-void QDeclarativeCamera::takePhotoFull(QCamera::LockStatus status, QCamera::LockChangeReason reason)
+void QDeclarativeCamera::focusZonesChanged()
 {
+#ifdef DEBUG
+    qDebug() << "Info: focus zones length:" << focus_->focusZones().length();
+    qDebug() << "Info: focus zone X:" << focus_->focusZones().last().area().x();
+    qDebug() << "Info: focus zone Y:" << focus_->focusZones().last().area().y();
+    qDebug() << "Info: focus zone WIDTH:" << focus_->focusZones().last().area().width();
+    qDebug() << "Info: focus zone HEIGHT:" << focus_->focusZones().last().area().height();
+#endif
+}
+
+void QDeclarativeCamera::focusChangedSlot(QCamera::LockStatus status, QCamera::LockChangeReason reason)
+{
+    /* Let's assume that the camera is locked. */
+    bool value = true;
+
 #ifdef DEBUG
     qDebug() << "Reason:" << reason << "Status:" << status;
 #endif
 
-    if(status == QCamera::Unlocked) {
+    if(status != QCamera::Locked) {
 #ifdef DEBUG
-        qDebug() << "Error: unlocked";
+        qDebug() << "Info: unlocked or searching";
 #endif
-        return;
+        value = false;
     }
+   // else
+    //    camera_->unlock();
 
-    takePhoto();
-    unlock();
+    emit this->focusChanged(value);
 }
 
 int QDeclarativeCamera::getMPix()
@@ -190,7 +278,7 @@ void QDeclarativeCamera::setResolutionNumber(int resolution_number)
 
     QImageEncoderSettings cameraSettings = capture->encodingSettings();
     //cameraSettings.setResolution(resolutions.at(resolution_number).width(), resolutions.at(resolution_number).height());
-    cameraSettings.setResolution(2448, 4000);
+    cameraSettings.setResolution(4000, 2448);
     capture->setEncodingSettings(cameraSettings);
     this->current_resolution = resolution_number;
 
@@ -228,11 +316,10 @@ void QDeclarativeCamera::parseAndStoreResolutions()
 
 void QDeclarativeCamera::setPointModeFocus()
 {
-    focus_->setFocusMode(QCameraFocus::ContinuousFocus);
-
     //focus_->setFocusPointMode(QCameraFocus::FocusPointCenter);
     /* If face detection enabled */
     focus_->setFocusPointMode(QCameraFocus::FocusPointFaceDetection);
+    focus_->setFocusMode(QCameraFocus::AutoFocus);
 }
 
 void QDeclarativeCamera::setPointModeFocusToCenter()
@@ -275,14 +362,6 @@ void QDeclarativeCamera::setFocusPoint(int x, int y)
 #endif
 }
 
-void QDeclarativeCamera::signalFocusGained()
-{
-#ifdef DEBUG
-    qDebug() << "focus gained";
-#endif
-    emit this->focusGained();
-}
-
 int QDeclarativeCamera::getViewfinderNativeWidth()
 {
     return viewfinder_->nativeSize().width();
@@ -303,6 +382,7 @@ void QDeclarativeCamera::start()
         parseAndStoreResolutions();
         setHighestResolution();
     }
+    isSupported();
     isRecording = true;
 }
 

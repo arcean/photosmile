@@ -1,0 +1,63 @@
+Qt Mobility API
+
+Exposure manual:  false 
+ExposureAuto:  true 
+ExposureNight:  true 
+ExposureBacklight:  false 
+ExposureSpotlight:  false 
+ExposureSports:  true 
+ExposureSnow:  false 
+ExposureBeach:  false 
+ExposureLargeAperture:  false 
+ExposureSmallAperture:  false 
+ExposurePortrait:  true 
+ExposureModeVendor:  false 
+ 
+FlashOff true 
+FlashOn true 
+FlashAuto true 
+FlashRedEyeReduction true 
+FlashFill true 
+FlashTorch false 
+FlashSlowSyncFrontCurtain false 
+FlashSlowSyncRearCurtain false 
+FlashManual false 
+ 
+MeteringAverage false 
+MeteringSpot false 
+MeteringMatrix true 
+ 
+aperture:  2.2/2.8
+aperture cont:  false 
+iso:  100 
+iso:  200 
+iso:  400 
+iso cont:  false 
+shutter cont:  false 
+max res: 3248x2448/4016x3016
+ 
+denoising: false 
+sharpening: false 
+WhiteBalanceManual: false 
+WhiteBalanceAuto: true 
+WhiteBalanceSunlight: true 
+WhiteBalanceCloudy: true 
+WhiteBalanceShade: false 
+WhiteBalanceTungsten: true 
+WhiteBalanceFluorescent: true 
+WhiteBalanceIncandescent: false 
+WhiteBalanceFlash: false 
+WhiteBalanceSunset: true 
+WhiteBalanceVendor: false 
+ 
+ManualFocus false 
+AutoFocus true 
+ContinuousFocus false 
+InfinityFocus false 
+HyperfocalFocus false 
+MacroFocus false 
+ 
+FocusPointAuto true 
+FocusPointCenter false 
+FocusPointFaceDetection false 
+FocusPointCustom false 

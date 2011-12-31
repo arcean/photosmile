@@ -40,6 +40,7 @@ public slots:
     void unload();
     void takeFocus();
     void takePhoto();
+    void unlock();
 
     void setPointModeFocus();
     void setPointModeFocusToCenter();
@@ -48,20 +49,20 @@ public slots:
     void setFocusPoint(int x, int y);
 
 private slots:
-    void takePhotoFull(QCamera::LockStatus status, QCamera::LockChangeReason reason);
-    void signalFocusGained();
+    void focusChangedSlot(QCamera::LockStatus status, QCamera::LockChangeReason reason);
+    void focusZonesChanged();
 
 protected slots:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
 
 signals:
     void mpixChanged(int mpix);
-    void focusGained();
+    void focusChanged(bool gained);
 
 private:
     void toggleCamera(bool mainCamera);
     void setHighestResolution();
-    void unlock();
+    void isSupported();
 
     QCamera* camera_;
     QCameraFocus *focus_;

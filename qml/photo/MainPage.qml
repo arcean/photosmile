@@ -87,6 +87,7 @@ Page {
 
     function takeFocus()
     {
+        viewfinderIndicatorSearchFocus();
         if(frontCam.visible)
             frontCam.takeFocus();
         else
@@ -158,6 +159,49 @@ Page {
             else
                 frontCam2.setPointModeFocusToCustom();
         }
+    }
+
+    function unlockCamera()
+    {
+        if (frontCam.visible)
+            frontCam.unlock();
+        else
+            frontCam2.unlock();
+
+        viewfinderIndicatorFocused();
+        unlockTimer.stop();
+    }
+
+    function viewfinderIndicatorGainFocus(gained)
+    {
+        if (gained)
+            viewfinderIndicatorReady();
+        else
+            viewfinderIndicatorSearchFocus();
+    }
+
+    function viewfinderIndicatorFocused()
+    {
+        indi.color = _INDICATOR_FOCUSED;
+    }
+
+    function viewfinderIndicatorSearchFocus()
+    {
+        indi.color = _INDICATOR_SEARCHING;
+    }
+
+    function viewfinderIndicatorReady()
+    {
+        indi.color = _INDICATOR_READY;
+        unlockTimer.start();
+    }
+
+    Timer {
+        id: unlockTimer
+        interval: 3000
+        running: false
+        repeat: false
+        onTriggered: unlockCamera();
     }
 
     Timer {
@@ -244,7 +288,7 @@ Page {
       //  aspectRatio: Qt.KeepAspectRatioByExpanding
         //visible: false
         onMpixChanged: mpxButton.text = mpix + " MP";
-        //onSignalFocusGained: ViewfinderIndicator.color
+        onFocusChanged: viewfinderIndicatorGainFocus(gained);
     }
 
     Camera {
@@ -258,6 +302,7 @@ Page {
        // aspectRatio: Qt.KeepAspectRatioByExpanding
         visible: false
         onMpixChanged: mpxButton.text = mpix + " MP";
+        onFocusChanged: viewfinderIndicatorGainFocus(gained);
     }
 /*
     MouseArea {
@@ -306,6 +351,7 @@ Page {
     ViewfinderIndicator {
         id: indi
         //anchors.centerIn: parent
+        color: _INDICATOR_FOCUSED
         x: (parent.width / 2) - (width / 2)
         y: (parent.height / 2) - (height / 2)
     }
@@ -329,8 +375,10 @@ Page {
 
     UIButton {
         id: settings
-        x: parent.width - 24 - width
-        y: (parent.height / 2) - height
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 24
+        anchors.right: parent.right
+        anchors.rightMargin: 24
         source: _ICON_LOCATION + "icon-m-camera-scene-auto.png"
         onClicked: {
             pageStack.push(settingsPage);
@@ -347,13 +395,22 @@ Page {
         text: ""
         onClicked: {
             mpxButton.text = (frontCam.visible ? frontCam.getMPix() : frontCam2.getMPix()) + " MP";
-            takeFocus();
         }
     }
 
     UIButtonWithText {
+        id: takeFocusButton
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.rightMargin: 24
+        source: _ICON_LOCATION + "icon-m-camera-whitebalance-fluorescent-selected.png"
+        text: ""
+        onClicked: takeFocus();
+    }
+
+    UIButtonWithText {
         id: takePhotoButton
-        anchors.top: parent.top
+        anchors.top: takeFocusButton.bottom
         anchors.topMargin: 24
         anchors.right: parent.right
         anchors.rightMargin: 24
@@ -366,16 +423,16 @@ Page {
         State {
             name: "show"
             PropertyChanges {
-                target: settings
-                x: parent.width - 24 - width
-                y: (parent.height / 2) - height
+               // target: settings
+              //  x: parent.width - 24 - width
+              //  y: (parent.height / 2) - height
             }
         },
         State {
             name: "hide"
             PropertyChanges {
-                target: settings
-                x: parent.width + 24
+              //  target: settings
+              //  x: parent.width + 24
             }
         }
     ]
